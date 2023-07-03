@@ -3,7 +3,6 @@ import { Nav } from "../../components";
 import { useAddress } from "@thirdweb-dev/react";
 import { useRouter } from "next/router";
 import { Player, usePlaybackInfo } from "@livepeer/react";
-import axios from "axios";
 import { ethers } from "ethers";
 import { chains } from "../../constants";
 import { Requirement, TokenInfo } from "../../types";
@@ -66,10 +65,15 @@ const Watch: React.FC = () => {
   };
 
   const generateJwt = async (requirement: Requirement) => {
-    const { data } = await axios.post("/api/generate-jwt", {
-      requirement,
-      userAddress,
+    const response = await fetch("/api/generate-jwt", {
+      method: "POST",
+      body: JSON.stringify({ requirement, userAddress }),
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
+
+    const data = await response.json();
 
     if (data?.token) {
       setJwt(data.token);

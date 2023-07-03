@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import Nav from "./Nav";
 import { Button, Modal } from "./shared";
-import { useWallet } from "@thirdweb-dev/react";
+import { useAddress } from "@thirdweb-dev/react";
 import { toast } from "react-hot-toast";
 
 const Hero: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const wallet = useWallet();
+  const address = useAddress();
 
   const toggleModal = () => {
     setIsModalOpen((prevIsModalOpen) => !prevIsModalOpen);
   };
 
   const handleWalletCheck = () => {
-    if (wallet) {
+    if (address) {
       toggleModal();
     } else {
       toast("Please connect your wallet", {

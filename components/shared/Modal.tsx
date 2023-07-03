@@ -2,6 +2,7 @@ import React, { useMemo, useRef, useState } from "react";
 import { Button, Input } from "./index";
 import Select from "./Select";
 import { useAsset, useCreateAsset } from "@livepeer/react";
+import { ethers } from "ethers";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
 
@@ -79,8 +80,6 @@ const Modal = ({ onClose }: ModalProps) => {
   }, [asset, assetStatus, createStatus]);
 
   const validateInputs = () => {
-    const userAddressRegex = /^0x[a-fA-F0-9]{40}$/;
-    const tokenAddressRegex = /^0x[a-fA-F0-9]{40}$/;
     const tokenAmountRegex = /^[1-9][0-9]*$/;
 
     if ((!chain || !tokenAddress || !tokenAmount) && !userAddress) {
@@ -95,7 +94,7 @@ const Modal = ({ onClose }: ModalProps) => {
       return false;
     }
 
-    if (userAddress && !userAddressRegex.test(userAddress)) {
+    if (userAddress && !ethers.utils.isAddress(userAddress)) {
       toast("Invalid User Wallet Address", {
         icon: "🔒",
         style: {
@@ -108,7 +107,7 @@ const Modal = ({ onClose }: ModalProps) => {
     }
 
     if (chain && tokenAddress && tokenAmount) {
-      if (!tokenAddressRegex.test(tokenAddress)) {
+      if (!ethers.utils.isAddress(tokenAddress)) {
         toast("Invalid Token Contract Address", {
           icon: "🔒",
           style: {

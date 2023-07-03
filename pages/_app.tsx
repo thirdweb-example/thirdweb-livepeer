@@ -10,14 +10,14 @@ import {
   ThirdwebProvider,
   metamaskWallet,
   coinbaseWallet,
-  walletConnectV1,
   walletConnect,
   safeWallet,
-  paperWallet,
 } from "@thirdweb-dev/react";
 
 const client = createReactClient({
-  provider: studioProvider({ apiKey: "9e8e8a41-24c3-42ec-9b7e-bc3739177068" }),
+  provider: studioProvider({
+    apiKey: process.env.NEXT_PUBLIC_LP_KEY as string,
+  }),
 });
 
 export default function App({ Component, pageProps }: AppProps) {
