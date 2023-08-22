@@ -13,6 +13,7 @@ import {
   walletConnect,
   safeWallet,
 } from "@thirdweb-dev/react";
+import { supporttedChains } from "../constants";
 
 const client = createReactClient({
   provider: studioProvider({
@@ -29,7 +30,8 @@ export default function App({ Component, pageProps }: AppProps) {
         walletConnect(),
         safeWallet(),
       ]}
-      activeChain="ethereum"
+      activeChain={supporttedChains[0]}
+      supportedChains={supporttedChains}
     >
       <LivepeerConfig client={client}>
         <Component {...pageProps} />
