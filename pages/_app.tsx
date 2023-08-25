@@ -32,6 +32,7 @@ export default function App({ Component, pageProps }: AppProps) {
       ]}
       activeChain={supporttedChains[0]}
       supportedChains={supporttedChains}
+      clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID as string}
     >
       <LivepeerConfig client={client}>
         <Component {...pageProps} />

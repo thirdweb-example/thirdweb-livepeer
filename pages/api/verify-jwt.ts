@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import jwt from "jsonwebtoken";
 import { GenerateJwtPayload } from "../../types";
 
-const secretKey = process.env.JWT_SECRET_KEY;
+const secretKey = process.env.JWT_SECRET_KEY as string;
 
 const verifyJwt = (req: NextApiRequest, res: NextApiResponse) => {
   const { context, accessKey } = req.body;

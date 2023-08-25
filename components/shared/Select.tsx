@@ -1,6 +1,6 @@
 import React from "react";
-import { chains } from "../../constants";
-import { Chain } from "../../types";
+import { supporttedChains } from "../../constants";
+import { type Chain } from "@thirdweb-dev/chains";
 
 type SelectProps = {
   placeholder: string;
@@ -21,7 +21,7 @@ const Select: React.FC<SelectProps> = ({ placeholder, onChange, label }) => {
           className="w-full px-3 py-2.5 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent"
         >
           <option value="">{placeholder}</option>
-          {chains.map((chain: Chain) => (
+          {supporttedChains.map((chain: Chain) => (
             <option key={chain.name} value={chain.name}>
               {chain.name}
             </option>

@@ -8,9 +8,10 @@ import {
   Avalanche,
   // Fuji,
   Fantom,
+  type Chain,
 } from "@thirdweb-dev/chains";
 
-export const supporttedChains = [
+export const supporttedChains: Chain[] = [
   Ethereum,
   Goerli,
   Polygon,
