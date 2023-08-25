@@ -4,8 +4,9 @@ import { useAddress } from "@thirdweb-dev/react";
 import { useRouter } from "next/router";
 import { Player, usePlaybackInfo } from "@livepeer/react";
 import { ethers } from "ethers";
-import { chains } from "../../constants";
+import { supporttedChains } from "../../constants";
 import { Requirement, TokenInfo } from "../../types";
+import { type Address, ThirdwebSDK, toEther } from "@thirdweb-dev/sdk";
 
 interface PlaybackPolicy {
   webhookContext: {
@@ -39,7 +40,7 @@ const Watch: React.FC = () => {
       Object.keys(token).length > 0 && requiredUserAddress;
 
     if (hasTokenAndUser) {
-      const canWatch = await hasSufficientTokenBalance(token);
+      const canWatch = await hasSufficientTokenBalance(token, userAddress); // Check this
       const hasAccess = canWatch && hasWalletAccess(requiredUserAddress);
       setAccessStatus(hasAccess);
       if (hasAccess) {
@@ -47,7 +48,7 @@ const Watch: React.FC = () => {
       }
     } else {
       if (Object.keys(token).length > 0) {
-        const canWatch = await hasSufficientTokenBalance(token);
+        const canWatch = await hasSufficientTokenBalance(token, userAddress);
         setAccessStatus(canWatch);
         if (canWatch) {
           await generateJwt(requirement);
@@ -81,7 +82,21 @@ const Watch: React.FC = () => {
     }
   };
 
-  const hasSufficientTokenBalance = async (tokenInfo: TokenInfo) => {
+  const hasSufficientTokenBalance = async (
+    tokenInfo: TokenInfo,
+    address: Address
+  ) => {
+    const chain = supporttedChains.find(
+      (chain) => chain.name === tokenInfo.chain
+    );
+
+    if (!chain) {
+      console.log("Chain ", tokenInfo.chain, " not supported");
+      return false;
+    }
+
+    const sdk = new ThirdwebSDK(chain);
+
     const minABI = [
       // balanceOf
       {
@@ -93,25 +108,14 @@ const Watch: React.FC = () => {
       },
     ];
 
-    console.log(userAddress);
-
-    const chain = chains.find((chain) => chain.name === tokenInfo.chain);
-
-    if (!chain) {
-      console.log("Chain mapping not found for chain:", tokenInfo.chain);
-      return false;
-    }
-
-    const provider = new ethers.providers.JsonRpcProvider(chain.rpc);
-    const contract = new ethers.Contract(
-      tokenInfo.tokenAddress,
-      minABI,
-      provider
+    const contract = await sdk.getContract(
+      tokenInfo.tokenAddress, // The address of your smart contract
+      minABI // The ABI of your smart contract
     );
 
-    const result = await contract.balanceOf(userAddress);
+    const result = await contract.erc20.balanceOf(address);
 
-    const balance = parseInt(ethers.utils.formatEther(result)); // // Assuming token has 18 decimal places
+    const balance = parseInt(toEther(result.value)); // // Assuming token has 18 decimal places
 
     const requiredToken = parseInt(tokenInfo.tokenAmount);
 
@@ -125,6 +129,7 @@ const Watch: React.FC = () => {
       const { playbackPolicy } = playbackInfo?.meta ?? {};
       checkAccess(playbackPolicy as PlaybackPolicy); // Add 'as PlaybackPolicy' to assert the type
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playbackInfo, userAddress, playbackId]);
 
   return (
