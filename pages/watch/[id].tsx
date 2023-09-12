@@ -3,7 +3,6 @@ import { Nav } from "../../components";
 import { useAddress } from "@thirdweb-dev/react";
 import { useRouter } from "next/router";
 import { Player, usePlaybackInfo } from "@livepeer/react";
-import { ethers } from "ethers";
 import { supporttedChains } from "../../constants";
 import { Requirement, TokenInfo } from "../../types";
 import { type Address, ThirdwebSDK, toEther } from "@thirdweb-dev/sdk";

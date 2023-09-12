@@ -1,8 +1,3 @@
-export type Chain = {
-  name: string;
-  rpc: string;
-};
-
 export type TokenInfo = {
   chain: string;
   tokenAddress: string;
